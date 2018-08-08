@@ -4,6 +4,7 @@ import com.djx.tasks.database.Task;
 import com.djx.tasks.database.TaskRepository;
 import com.djx.tasks.database.TodoList;
 import com.djx.tasks.database.TodoListRepository;
+import com.djx.tasks.exception.TaskNotFoundException;
 import com.djx.tasks.exception.TodoListNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,7 @@ public class TodoListController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/list/{id}/tasks")
     @ResponseBody
-    public String addNewTask(@PathVariable String id, @RequestBody Task task) {
+    public void addNewTask(@PathVariable String id, @RequestBody Task task) {
         Optional<TodoList> list = todoListRepository.findById(id);
         if (!list.isPresent()) {
             throw new TodoListNotFoundException("List not found");
@@ -61,17 +62,16 @@ public class TodoListController {
 
         task.setTodoList(list.get());
         taskRepository.save(task);
-
-        return "successful operation";
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/list/{id}/task/{taskId}/complete")
     @ResponseBody
-    public String updateTask(@PathVariable String id, @RequestBody Task task, @PathVariable String taskId) {
-        Task t = taskRepository.findById(taskId).get();
-        t.setCompleted(true);
-        taskRepository.save(t);
-        return "good";
+    public void updateTask(@PathVariable String id, @PathVariable String taskId, @RequestBody Task task) {
+        Optional<Task> t = taskRepository.findById(taskId);
+        if (!t.isPresent()) {
+            throw new TaskNotFoundException("Task not found");
+        }
+        t.get().setCompleted(task.isCompleted());
+        taskRepository.save(t.get());
     }
-
 }

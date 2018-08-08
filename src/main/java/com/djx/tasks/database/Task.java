@@ -10,16 +10,10 @@ import java.util.UUID;
 @Entity
 public class Task {
 
-    @Id
-    private String id;
-
+    @Id private String id;
     private String name;
-
     private boolean completed;
-
-    @ManyToOne
-    @JsonIgnore
-    private TodoList todoList;
+    @ManyToOne @JsonIgnore private TodoList todoList;
 
     public Task() {
         this.id = UUID.randomUUID().toString();

@@ -4,24 +4,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "todo_list")
 public class TodoList {
 
-    @Id
-    private String id;
-
+    @Id private String id;
     private String name;
-
     private String description;
-
-    @OneToMany(mappedBy = "todoList", cascade = CascadeType.ALL)
-    private Set<Task> tasks;
-
+    @OneToMany(mappedBy = "todoList", cascade = CascadeType.ALL) private Set<Task> tasks;
 
     public TodoList() {
         this.id = UUID.randomUUID().toString();
