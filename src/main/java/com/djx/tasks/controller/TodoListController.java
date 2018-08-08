@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -25,8 +26,12 @@ public class TodoListController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/lists")
     @ResponseBody
-    public Iterable<TodoList> findAll() {
-        return todoListRepository.findAll();
+    public Iterable<TodoList> findAll(@RequestParam(required = false) String searchString) {
+        if (searchString == null) {
+            return todoListRepository.findAll();
+        } else {
+            return todoListRepository.findByNameContainingOrDescriptionContaining(searchString, searchString);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/lists")
